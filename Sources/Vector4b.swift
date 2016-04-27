@@ -160,21 +160,21 @@ public struct Vector4b : BooleanVectorType {
         self.w = v.w
     }
 
-    public init (_ s:Bool, _ v:Vector4b, @noescape _ op:(_:Bool, _:Bool) -> Bool) {
+    public init (_ s:Bool, _ v:Vector4b, _ op: @noescape (_:Bool, _:Bool) -> Bool) {
         self.x = op(s, v.x)
         self.y = op(s, v.y)
         self.z = op(s, v.z)
         self.w = op(s, v.w)
     }
 
-    public init (_ v:Vector4b, _ s:Bool, @noescape _ op:(_:Bool, _:Bool) -> Bool) {
+    public init (_ v:Vector4b, _ s:Bool, _ op: @noescape (_:Bool, _:Bool) -> Bool) {
         self.x = op(v.x, s)
         self.y = op(v.y, s)
         self.z = op(v.z, s)
         self.w = op(v.w, s)
     }
 
-    public init(_ v: Vector4b, @noescape _ op:(_:Bool) -> Bool) {
+    public init(_ v: Vector4b, _ op: @noescape (_:Bool) -> Bool) {
         self.x = op(v[0])
         self.y = op(v[1])
         self.z = op(v[2])
@@ -182,7 +182,7 @@ public struct Vector4b : BooleanVectorType {
     }
 
     public init<T:VectorType where T.BooleanVector == BooleanVector>
-        (_ v: T, @noescape _ op:(_:T.Element) -> Bool) {
+        (_ v: T, _ op: @noescape (_:T.Element) -> Bool) {
             self.x = op(v[0])
             self.y = op(v[1])
             self.z = op(v[2])
@@ -191,7 +191,7 @@ public struct Vector4b : BooleanVectorType {
 
     public init<T1:VectorType, T2:VectorType where
         T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
-        (_ v1:T1, _ v2:T2, @noescape _ op:(_:T1.Element, _:T2.Element) -> Bool) {
+        (_ v1:T1, _ v2:T2, _ op: @noescape (_:T1.Element, _:T2.Element) -> Bool) {
             self.x = op(v1[0], v2[0])
             self.y = op(v1[1], v2[1])
             self.z = op(v1[2], v2[2])

@@ -52,8 +52,8 @@ public struct Matrix2x3<T:ArithmeticType> : MatrixType {
 
     public var debugDescription: String {
         return String(self.dynamicType) + "(" + [x,y].map{ (v:Vector3<T>) -> String in
-            "[" + [v.x,v.y,v.z].map{ (n:T) -> String in String(n) }.joinWithSeparator(", ") + "]"
-            }.joinWithSeparator(", ") + ")"
+            "[" + [v.x,v.y,v.z].map{ (n:T) -> String in String(n) }.joined(separator: ", ") + "]"
+            }.joined(separator: ", ") + ")"
     }
 
     public var hashValue: Int {
@@ -188,22 +188,22 @@ public struct Matrix2x3<T:ArithmeticType> : MatrixType {
         self.y = Vector3<T>(m.y)
     }
 
-    public init (_ m:Matrix2x3<T>, @noescape _ op:(_:T) -> T) {
+    public init (_ m:Matrix2x3<T>, _ op: @noescape (_:T) -> T) {
         self.x = Vector3<T>(m.x, op)
         self.y = Vector3<T>(m.y, op)
     }
 
-    public init (_ s:T, _ m:Matrix2x3<T>, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ s:T, _ m:Matrix2x3<T>, _ op: @noescape (_:T, _:T) -> T) {
         self.x = Vector3<T>(s, m.x, op)
         self.y = Vector3<T>(s, m.y, op)
     }
 
-    public init (_ m:Matrix2x3<T>, _ s:T, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ m:Matrix2x3<T>, _ s:T, _ op: @noescape (_:T, _:T) -> T) {
         self.x = Vector3<T>(m.x, s, op)
         self.y = Vector3<T>(m.y, s, op)
     }
 
-    public init (_ m1:Matrix2x3<T>, _ m2:Matrix2x3<T>, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ m1:Matrix2x3<T>, _ m2:Matrix2x3<T>, _ op: @noescape (_:T, _:T) -> T) {
         self.x = Vector3<T>(m1.x, m2.x, op)
         self.y = Vector3<T>(m1.y, m2.y, op)
     }

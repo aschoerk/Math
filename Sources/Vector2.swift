@@ -181,46 +181,46 @@ public struct Vector2<T:ArithmeticType> : VectorType {
         self.y = T(v.y)
     }
 
-    public init (_ s:T, _ v:Vector2<T>, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ s:T, _ v:Vector2<T>, _ op: @noescape (_:T, _:T) -> T) {
         self.x = op(s, v.x)
         self.y = op(s, v.y)
     }
 
-    public init (_ v:Vector2<T>, _ s:T, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ v:Vector2<T>, _ s:T, _ op: @noescape (_:T, _:T) -> T) {
         self.x = op(v.x, s)
         self.y = op(v.y, s)
     }
 
     public init<T:VectorType where T.BooleanVector == BooleanVector>
-        (_ v: T, @noescape _ op:(_:T.Element) -> Element) {
+        (_ v: T, _ op: @noescape (_:T.Element) -> Element) {
             self.x = op(v[0])
             self.y = op(v[1])
     }
 
     public init<T1:VectorType, T2:VectorType where
         T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
-        (_ v1:T1, _ v2:T2, @noescape _ op:(_:T1.Element, _:T2.Element) -> Element) {
+        (_ v1:T1, _ v2:T2, _ op: @noescape (_:T1.Element, _:T2.Element) -> Element) {
             self.x = op(v1[0], v2[0])
             self.y = op(v1[1], v2[1])
     }
 
     public init<T1:VectorType, T2:VectorType where
         T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
-        (_ v1:T1, inout _ v2:T2, @noescape _ op:(_:T1.Element, inout _:T2.Element) -> Element) {
+        (_ v1:T1, _ v2:inout T2, _ op: @noescape (_:T1.Element, inout _:T2.Element) -> Element) {
             self.x = op(v1[0], &v2[0])
             self.y = op(v1[1], &v2[1])
     }
 
     public init<T1:VectorType, T2:VectorType, T3:VectorType where
         T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector, T3.BooleanVector == BooleanVector>
-        (_ v1:T1, _ v2:T2, _ v3:T3, @noescape _ op:(_:T1.Element, _:T2.Element, _:T3.Element) -> Element) {
+        (_ v1:T1, _ v2:T2, _ v3:T3, _ op: @noescape (_:T1.Element, _:T2.Element, _:T3.Element) -> Element) {
             self.x = op(v1[0], v2[0], v3[0])
             self.y = op(v1[1], v2[1], v3[1])
     }
 
     public init<T1:VectorType, T2:VectorType, T3:BooleanVectorType where
         T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector, T3.BooleanVector == BooleanVector>
-        (_ v1:T1, _ v2:T2, _ v3:T3, @noescape _ op:(_:T1.Element, _:T2.Element, _:Bool) -> Element) {
+        (_ v1:T1, _ v2:T2, _ v3:T3, _ op: @noescape (_:T1.Element, _:T2.Element, _:Bool) -> Element) {
             self.x = op(v1[0], v2[0], v3[0])
             self.y = op(v1[1], v2[1], v3[1])
     }

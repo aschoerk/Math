@@ -137,22 +137,22 @@ public struct Complex<T:FloatingPointArithmeticType> : MatrixType, FloatLiteralC
         return Complex<T>(real, -imag)
     }
 
-    public init (_ x:Complex<T>, @noescape _ op:(_:T) -> T) {
+    public init (_ x:Complex<T>, _ op: @noescape (_:T) -> T) {
         self.real = op(x[0])
         self.imag = op(x[1])
     }
 
-    public init (_ s:T, _ x:Complex<T>, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ s:T, _ x:Complex<T>, _ op: @noescape (_:T, _:T) -> T) {
         self.real = op(s, x[0])
         self.imag = op(s, x[1])
     }
 
-    public init (_ x:Complex<T>, _ s:T, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ x:Complex<T>, _ s:T, _ op: @noescape (_:T, _:T) -> T) {
         self.real = op(x[0], s)
         self.imag = op(x[1], s)
     }
 
-    public init (_ x1:Complex<T>, _ x2:Complex<T>, @noescape _ op:(_:T, _:T) -> T) {
+    public init (_ x1:Complex<T>, _ x2:Complex<T>, _ op: @noescape (_:T, _:T) -> T) {
         self.real = op(x1[0], x2[0])
         self.imag = op(x1[1], x2[1])
     }
