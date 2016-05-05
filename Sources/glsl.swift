@@ -786,22 +786,38 @@ public func outerProduct<T:ArithmeticType>(c:Vector4<T>, _ r:Vector3<T>) -> Matr
 
 @warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector2<T>, _ r:Vector4<T>) -> Matrix4x2<T> {
+    let c1 = c * r[0]
+    let c2 = c * r[1]
+    let c3 = c * r[2]
+    let c4 = c * r[3]
+    
     return Matrix4x2(
-        c * r[0], c * r[1], c * r[2], c * r[3]
+        c1, c2, c3, c4
     )
 }
 
 @warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector3<T>, _ r:Vector4<T>) -> Matrix4x3<T> {
+    
+    let c1 = c * r[0]
+    let c2 = c * r[1]
+    let c3 = c * r[2]
+    let c4 = c * r[3]
+    
     return Matrix4x3(
-        c * r[0], c * r[1], c * r[2], c * r[3]
+        c1, c2, c3, c4
     )
 }
 
 @warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector4<T>, _ r:Vector4<T>) -> Matrix4x4<T> {
+    let c1 = c * r[0]
+    let c2 = c * r[1]
+    let c3 = c * r[2]
+    let c4 = c * r[3]
+    
     return Matrix4x4(
-        c * r[0], c * r[1], c * r[2], c * r[3]
+        c1, c2, c3, c4
     )
 }
 

@@ -72,6 +72,8 @@ extension UInt64: BitsOperationsType {}
 // This includes Vectors, Complex, and Quaternion.
 public protocol MatrixType : MutableCollection, Hashable, Equatable, CustomDebugStringConvertible {
     associatedtype Element:ArithmeticType
+    associatedtype Index = Int
+    
     init()
     init(_: Self, _:@noescape(_:Element) -> Element)
     init(_: Self, _: Self, _:@noescape(_:Element, _:Element) -> Element)
@@ -104,6 +106,12 @@ public protocol MatrixType : MutableCollection, Hashable, Equatable, CustomDebug
     func %=(_: inout Self, _: Element)
 }
 
+public extension MatrixType {
+    public func index(after: Int) -> Int {
+        return after + 1
+    }
+}
+
 // This protocol is only Vector2, Vector3, and Vector4
 public protocol VectorType : MatrixType, ArrayLiteralConvertible {
     associatedtype FloatVector
@@ -132,6 +140,15 @@ public protocol VectorType : MatrixType, ArrayLiteralConvertible {
     func /=(_: inout Self, _: Self)
 }
 
+public extension VectorType {
+    public subscript(bounds: Range<Self.Index>) -> MutableSlice<Self> {
+        get {
+            return MutableSlice(base: self, bounds: bounds)
+        }
+    }
+}
+
+
 // This protocol is only Vector2b, Vector3b, and Vector4b
 public protocol BooleanVectorType : MutableCollection, Hashable, Equatable, CustomDebugStringConvertible {
     associatedtype BooleanVector
@@ -141,4 +158,10 @@ public protocol BooleanVectorType : MutableCollection, Hashable, Equatable, Cust
     init<T1:VectorType, T2:VectorType where
         T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
         (_:T1, _:T2, _:@noescape(_:T1.Element, _:T2.Element) -> Bool)
+}
+
+public extension BooleanVectorType {
+    public func index(after: Int) -> Int {
+        return after + 1
+    }
 }

@@ -159,10 +159,13 @@ extension SGLMath
 
     public static func scale<T:ArithmeticType>(_ m:Matrix4x4<T>, _ v:Vector3<T>) -> Matrix4x4<T>
     {
+        let c1 = m[0] * v[0]
+        let c2 = m[1] * v[1]
+        let c3 = m[2] * v[2]
         return Matrix4x4<T>(
-            m[0] * v[0],
-            m[1] * v[1],
-            m[2] * v[2],
+            c1,
+            c2,
+            c3,
             m[3]
         )
     }
@@ -579,9 +582,13 @@ extension SGLMath
     {
         assert(delta.x > 0 && delta.y > 0);
 
-        var tmpx:T = viewport[2] - 2 * (center.x - viewport[0])
+        let viewport0 = viewport[0]
+        let subtrahend1 = 2 * (center.x - viewport0)
+        var tmpx:T = viewport[2] - subtrahend1
         tmpx /= delta.x
-        var tmpy:T = viewport[3] - 2 * (center.y - viewport[1])
+        let viewport1 = viewport[1]
+        let subtrahend2 = 2 * (center.y - viewport1)
+        var tmpy:T = viewport[3] - subtrahend2
         tmpy /= delta.y
 
         let trans:Vector3<T> = Vector3<T>(tmpx, tmpy, 0)

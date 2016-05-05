@@ -54,6 +54,10 @@ public struct Matrix2x2<T:ArithmeticType> : MatrixType {
     public subscript(column:Int, row:Int) -> T {
         return self[column][row]
     }
+    
+    public func index(after: Int) -> Int {
+        return after + 1
+    }
 
     public var debugDescription: String {
         return String(self.dynamicType) + "(" + [x,y].map{ (v:Vector2<T>) -> String in
