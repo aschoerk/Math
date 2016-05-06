@@ -119,6 +119,7 @@ public protocol VectorType : MatrixType, ArrayLiteralConvertible {
     associatedtype Int32Vector
     associatedtype UInt32Vector
     associatedtype BooleanVector
+    
     // T.BooleanVector == BooleanVector : Must use this key with mixed types.
     subscript(_:Int) -> Element { get set }
     init<T:VectorType where T.BooleanVector == BooleanVector>(_: T, _:@noescape(_:T.Element) -> Element)
@@ -140,25 +141,13 @@ public protocol VectorType : MatrixType, ArrayLiteralConvertible {
     func /=(_: inout Self, _: Self)
 }
 
-public extension VectorType {
-    public subscript(bounds: Range<Self.Index>) -> MutableSlice<Self> {
-        get {
-            return MutableSlice(base: self, bounds: bounds)
-        }
-        set(slice) {
-            var index = slice.startIndex
-            while index != slice.endIndex {
-                self[index] = slice[index]
-                index = slice.index(after: index)
-            }
-        }
-    }
-}
-
 
 // This protocol is only Vector2b, Vector3b, and Vector4b
 public protocol BooleanVectorType : MutableCollection, Hashable, Equatable, CustomDebugStringConvertible {
     associatedtype BooleanVector
+    
+    associatedtype Index = Int
+    
     subscript(_:Int) -> Bool { get set }
     init(_: Self, _:@noescape(_:Bool) -> Bool)
     init<T:VectorType where T.BooleanVector == BooleanVector>(_: T, _:@noescape(_:T.Element) -> Bool)
@@ -172,7 +161,6 @@ public extension BooleanVectorType {
         return after + 1
     }
 }
-
 
 //MARK: glsl.swift
 
@@ -1753,5 +1741,3 @@ public func /<T:VectorType>(v1: T, v2: T) -> T {
 public func /=<T:VectorType>(v1: inout T, v2: T) {
     v1 = v1 / v2
 }
-
-
