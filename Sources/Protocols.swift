@@ -145,6 +145,13 @@ public extension VectorType {
         get {
             return MutableSlice(base: self, bounds: bounds)
         }
+        set(slice) {
+            var index = slice.startIndex
+            while index != slice.endIndex {
+                self[index] = slice[index]
+                index = slice.index(after: index)
+            }
+        }
     }
 }
 
