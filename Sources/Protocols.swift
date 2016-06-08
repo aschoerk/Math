@@ -1708,7 +1708,7 @@ public func *<T:VectorType>(v1: T, v2: T) -> T {
         default: break
         }
     #endif
-    return T(v1, v2, /)
+    return T(v1, v2, *)
 }
 
 public func *=<T:VectorType>(v1: inout T, v2: T) {
