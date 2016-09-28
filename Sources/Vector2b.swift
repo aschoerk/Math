@@ -53,7 +53,7 @@ public struct Vector2b : BooleanVectorType {
     }
 
     public var debugDescription: String {
-        return String(self.dynamicType) + "(\(x), \(y))"
+        return "\(type(of: self))(\(x), \(y))"
     }
 
     public var hashValue: Int {
@@ -105,30 +105,30 @@ public struct Vector2b : BooleanVectorType {
         self.y = v.y
     }
 
-    public init (_ s:Bool, _ v:Vector2b, _ op: @noescape (_:Bool, _:Bool) -> Bool) {
+    public init (_ s:Bool, _ v:Vector2b, _ op: (_:Bool, _:Bool) -> Bool) {
         self.x = op(s, v.x)
         self.y = op(s, v.y)
     }
 
-    public init (_ v:Vector2b, _ s:Bool, _ op: @noescape (_:Bool, _:Bool) -> Bool) {
+    public init (_ v:Vector2b, _ s:Bool, _ op: (_:Bool, _:Bool) -> Bool) {
         self.x = op(v.x, s)
         self.y = op(v.y, s)
     }
 
-    public init(_ v: Vector2b, _ op: @noescape (_:Bool) -> Bool) {
+    public init(_ v: Vector2b, _ op: (_:Bool) -> Bool) {
             self.x = op(v[0])
             self.y = op(v[1])
     }
 
-    public init<T:VectorType where T.BooleanVector == BooleanVector>
-        (_ v: T, _ op: @noescape (_:T.Element) -> Bool) {
+    public init<T:VectorType>(_ v: T, _ op:  (_:T.Element) -> Bool)
+      where T.BooleanVector == BooleanVector{
             self.x = op(v[0])
             self.y = op(v[1])
     }
 
-    public init<T1:VectorType, T2:VectorType where
-        T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
-        (_ v1:T1, _ v2:T2, _ op: @noescape (_:T1.Element, _:T2.Element) -> Bool) {
+    public init<T1:VectorType, T2:VectorType>
+    (_ v1:T1, _ v2:T2, _ op: (_:T1.Element, _:T2.Element) -> Bool)
+      where T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector {
             self.x = op(v1[0], v2[0])
             self.y = op(v1[1], v2[1])
     }

@@ -36,7 +36,7 @@ public final class SGLMath {
     // https://en.wikipedia.org/wiki/MurmurHash
     public static func hash(_ nums: Int...) -> Int
     {
-        if sizeof(Int) == 8 { // 64 bit
+        if MemoryLayout<Int>.size == 8 { // 64 bit
             func rotl(_ x:UInt, _ r:UInt) -> UInt {
                 return (x << r) | (x >> (64 - r))
             }
@@ -335,13 +335,17 @@ public final class SGLMath {
 
     public static func SGLmodf<T:FloatingPointArithmeticType>(_ x:T, _ i:inout T) -> T {
         if let z = x as? Double {
-            return withUnsafeMutablePointer(&i) {
-                return modf(z, UnsafeMutablePointer<Double>($0)) as! T
+            return withUnsafePointer(to: &i) {
+                $0.withMemoryRebound(to: Double.self, capacity: 1) {
+                    return modf(z, $0) as! T
+                }
             }
         }
         if let z = x as? Float {
-            return withUnsafeMutablePointer(&i) {
-                return modff(z, UnsafeMutablePointer<Float>($0)) as! T
+            return withUnsafePointer(to: &i) {
+                $0.withMemoryRebound(to: Float.self, capacity: 1) {
+                    return modff(z, $0) as! T
+                }
             }
         }
         preconditionFailure()

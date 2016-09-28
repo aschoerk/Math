@@ -20,7 +20,7 @@
 // MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 
 
-public struct Quaternion<T:FloatingPointArithmeticType> : MatrixType, ArrayLiteralConvertible {
+public struct Quaternion<T:FloatingPointArithmeticType> : MatrixType, ExpressibleByArrayLiteral {
 
     public typealias Element = T
 
@@ -52,7 +52,7 @@ public struct Quaternion<T:FloatingPointArithmeticType> : MatrixType, ArrayLiter
     }
 
     public var debugDescription: String {
-        return String(self.dynamicType) + "(x:\(x), y:\(y), z:\(z), w:\(w))"
+        return "\(type(of: self))(x:\(x), y:\(y), z:\(z), w:\(w))"
     }
 
     public var hashValue: Int {
@@ -120,28 +120,28 @@ public struct Quaternion<T:FloatingPointArithmeticType> : MatrixType, ArrayLiter
         self.w = T(q.w)
     }
 
-    public init (_ q:Quaternion<T>, _ op: @noescape (_:T) -> T) {
+    public init (_ q:Quaternion<T>, _ op: (_:T) -> T) {
         self.x = op(q.x)
         self.y = op(q.y)
         self.z = op(q.z)
         self.w = op(q.w)
     }
 
-    public init (_ s:T, _ q:Quaternion<T>, _ op: @noescape (_:T, _:T) -> T) {
+    public init (_ s:T, _ q:Quaternion<T>, _ op: (_:T, _:T) -> T) {
         self.x = op(s, q.x)
         self.y = op(s, q.y)
         self.z = op(s, q.z)
         self.w = op(s, q.w)
     }
 
-    public init (_ q:Quaternion<T>, _ s:T, _ op: @noescape (_:T, _:T) -> T) {
+    public init (_ q:Quaternion<T>, _ s:T, _ op: (_:T, _:T) -> T) {
         self.x = op(q.x, s)
         self.y = op(q.y, s)
         self.z = op(q.z, s)
         self.w = op(q.w, s)
     }
 
-    public init (_ q1:Quaternion<T>, _ q2:Quaternion<T>, _ op: @noescape (_:T, _:T) -> T) {
+    public init (_ q1:Quaternion<T>, _ q2:Quaternion<T>, _ op: (_:T, _:T) -> T) {
         self.x = op(q1.x, q2.x)
         self.y = op(q1.y, q2.y)
         self.z = op(q1.z, q2.z)

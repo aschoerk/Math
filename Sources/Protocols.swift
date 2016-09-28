@@ -20,7 +20,7 @@
 // MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 
 
-public protocol ArithmeticType : Hashable, Comparable, IntegerLiteralConvertible {
+public protocol ArithmeticType : Hashable, Comparable, ExpressibleByIntegerLiteral {
     init(_: Double)
     init(_: Float)
     init(_: Int)
@@ -33,28 +33,28 @@ public protocol ArithmeticType : Hashable, Comparable, IntegerLiteralConvertible
     init(_: UInt32)
     init(_: Int64)
     init(_: UInt64)
-    func +(_: Self, _: Self) -> Self
-    func +=(_: inout Self, _: Self)
-    func -(_: Self, _: Self) -> Self
-    func -=(_: inout Self, _: Self)
-    func *(_: Self, _: Self) -> Self
-    func *=(_: inout Self, _: Self)
-    func /(_: Self, _: Self) -> Self
-    func /=(_: inout Self, _: Self)
-    func %(_: Self, _: Self) -> Self
-    func %=(_: inout Self, _: Self)
+    static func +(_: Self, _: Self) -> Self
+    static func +=(_: inout Self, _: Self)
+    static func -(_: Self, _: Self) -> Self
+    static func -=(_: inout Self, _: Self)
+    static func *(_: Self, _: Self) -> Self
+    static func *=(_: inout Self, _: Self)
+    static func /(_: Self, _: Self) -> Self
+    static func /=(_: inout Self, _: Self)
+    static func %(_: Self, _: Self) -> Self
+    static func %=(_: inout Self, _: Self)
 }
 
-public protocol FloatingPointArithmeticType : ArithmeticType, FloatingPoint, SignedNumber, FloatLiteralConvertible {}
+public protocol FloatingPointArithmeticType : ArithmeticType, FloatingPoint, SignedNumber, ExpressibleByFloatLiteral {}
 extension Double: FloatingPointArithmeticType {}
 extension Float: FloatingPointArithmeticType {}
 
 // Swift didn't put these in BitwiseOperationsType
 public protocol BitsOperationsType : ArithmeticType, BitwiseOperations {
-    func <<(_: Self, _: Self) -> Self
-    func <<=(_: inout Self, _: Self)
-    func >>(_: Self, _: Self) -> Self
-    func >>=(_: inout Self, _: Self)
+    static func <<(_: Self, _: Self) -> Self
+    static func <<=(_: inout Self, _: Self)
+    static func >>(_: Self, _: Self) -> Self
+    static func >>=(_: inout Self, _: Self)
 }
 extension Int: BitsOperationsType {}
 extension UInt: BitsOperationsType {}
@@ -73,37 +73,37 @@ extension UInt64: BitsOperationsType {}
 public protocol MatrixType : MutableCollection, Hashable, Equatable, CustomDebugStringConvertible {
     associatedtype Element:ArithmeticType
     associatedtype Index = Int
-    
+
     init()
-    init(_: Self, _:@noescape(_:Element) -> Element)
-    init(_: Self, _: Self, _:@noescape(_:Element, _:Element) -> Element)
-    init(_: Element, _: Self, _:@noescape(_:Element, _:Element) -> Element)
-    init(_: Self, _: Element, _:@noescape(_:Element, _:Element) -> Element)
-    prefix func ++(_: inout Self) -> Self
-    postfix func ++(_: inout Self) -> Self
-    prefix func --(_: inout Self) -> Self
-    postfix func --(_: inout Self) -> Self
-    func +(_: Self, _: Self) -> Self
-    func +=(_: inout Self, _: Self)
-    func +(_: Element, _: Self) -> Self
-    func +(_: Self, _: Element) -> Self
-    func +=(_: inout Self, _: Element)
-    func -(_: Self, _: Self) -> Self
-    func -=(_: inout Self, _: Self)
-    func -(_: Element, _: Self) -> Self
-    func -(_: Self, _: Element) -> Self
-    func -=(_: inout Self, _: Element)
-    func *(_: Element, _: Self) -> Self
-    func *(_: Self, _: Element) -> Self
-    func *=(_: inout Self, _: Element)
-    func /(_: Element, _: Self) -> Self
-    func /(_: Self, _: Element) -> Self
-    func /=(_: inout Self, _: Element)
-    func %(_: Self, _: Self) -> Self
-    func %=(_: inout Self, _: Self)
-    func %(_: Element, _: Self) -> Self
-    func %(_: Self, _: Element) -> Self
-    func %=(_: inout Self, _: Element)
+    init(_: Self, _:(_:Element) -> Element)
+    init(_: Self, _: Self, _:(_:Element, _:Element) -> Element)
+    init(_: Element, _: Self, _:(_:Element, _:Element) -> Element)
+    init(_: Self, _: Element, _:(_:Element, _:Element) -> Element)
+    static prefix func ++(_: inout Self) -> Self
+    static postfix func ++(_: inout Self) -> Self
+    static prefix func --(_: inout Self) -> Self
+    static postfix func --(_: inout Self) -> Self
+    static func +(_: Self, _: Self) -> Self
+    static func +=(_: inout Self, _: Self)
+    static func +(_: Element, _: Self) -> Self
+    static func +(_: Self, _: Element) -> Self
+    static func +=(_: inout Self, _: Element)
+    static func -(_: Self, _: Self) -> Self
+    static func -=(_: inout Self, _: Self)
+    static func -(_: Element, _: Self) -> Self
+    static func -(_: Self, _: Element) -> Self
+    static func -=(_: inout Self, _: Element)
+    static func *(_: Element, _: Self) -> Self
+    static func *(_: Self, _: Element) -> Self
+    static func *=(_: inout Self, _: Element)
+    static func /(_: Element, _: Self) -> Self
+    static func /(_: Self, _: Element) -> Self
+    static func /=(_: inout Self, _: Element)
+    static func %(_: Self, _: Self) -> Self
+    static func %=(_: inout Self, _: Self)
+    static func %(_: Element, _: Self) -> Self
+    static func %(_: Self, _: Element) -> Self
+    static func %=(_: inout Self, _: Element)
 }
 
 public extension MatrixType {
@@ -113,47 +113,49 @@ public extension MatrixType {
 }
 
 // This protocol is only Vector2, Vector3, and Vector4
-public protocol VectorType : MatrixType, ArrayLiteralConvertible {
+public protocol VectorType : MatrixType, ExpressibleByArrayLiteral {
     associatedtype FloatVector
     associatedtype DoubleVector
     associatedtype Int32Vector
     associatedtype UInt32Vector
     associatedtype BooleanVector
-    
+
     // T.BooleanVector == BooleanVector : Must use this key with mixed types.
     subscript(_:Int) -> Element { get set }
-    init<T:VectorType where T.BooleanVector == BooleanVector>(_: T, _:@noescape(_:T.Element) -> Element)
-    init<T1:VectorType, T2:VectorType where
-        T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
-        (_:T1, _:T2, _:@noescape(_:T1.Element, _:T2.Element) -> Element)
-    init<T1:VectorType, T2:VectorType where
-        T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
-        (_:T1, _:inout T2, _: @noescape (_:T1.Element, inout _:T2.Element) -> Element)
-    init<T1:VectorType, T2:VectorType, T3:VectorType where
-        T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector, T3.BooleanVector == BooleanVector>
-        (_:T1, _:T2, _:T3, _:@noescape(_:T1.Element, _:T2.Element, _:T3.Element) -> Element)
-    init<T1:VectorType, T2:VectorType, T3:BooleanVectorType where
-        T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector, T3.BooleanVector == BooleanVector>
-        (_:T1, _:T2, _:T3, _:@noescape(_:T1.Element, _:T2.Element, _:Bool) -> Element)
-    func *(_: Self, _: Self) -> Self
-    func *=(_: inout Self, _: Self)
-    func /(_: Self, _: Self) -> Self
-    func /=(_: inout Self, _: Self)
+    init<T:VectorType>(_: T, _:(_:T.Element) -> Element)
+    where T.BooleanVector == BooleanVector
+    init<T1:VectorType, T2:VectorType>
+    (_:T1, _:T2, _:(_:T1.Element, _:T2.Element) -> Element)
+    where T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector
+    init<T1:VectorType, T2:VectorType>
+    (_:T1, _:inout T2, _:  (_:T1.Element, _:inout T2.Element) -> Element)
+    where T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector
+    init<T1:VectorType, T2:VectorType, T3:VectorType>
+    (_:T1, _:T2, _:T3, _:(_:T1.Element, _:T2.Element, _:T3.Element) -> Element)
+    where T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector, T3.BooleanVector == BooleanVector
+    init<T1:VectorType, T2:VectorType, T3:BooleanVectorType>
+    (_:T1, _:T2, _:T3, _:(_:T1.Element, _:T2.Element, _:Bool) -> Element)
+    where T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector, T3.BooleanVector == BooleanVector
+
+    static func *(_: Self, _: Self) -> Self
+    static func *=(_: inout Self, _: Self)
+    static func /(_: Self, _: Self) -> Self
+    static func /=(_: inout Self, _: Self)
 }
 
 
 // This protocol is only Vector2b, Vector3b, and Vector4b
 public protocol BooleanVectorType : MutableCollection, Hashable, Equatable, CustomDebugStringConvertible {
     associatedtype BooleanVector
-    
     associatedtype Index = Int
-    
+
     subscript(_:Int) -> Bool { get set }
-    init(_: Self, _:@noescape(_:Bool) -> Bool)
-    init<T:VectorType where T.BooleanVector == BooleanVector>(_: T, _:@noescape(_:T.Element) -> Bool)
-    init<T1:VectorType, T2:VectorType where
-        T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector>
-        (_:T1, _:T2, _:@noescape(_:T1.Element, _:T2.Element) -> Bool)
+    init(_: Self, _:(_:Bool) -> Bool)
+    init<T:VectorType>(_: T, _:(_:T.Element) -> Bool)
+    where T.BooleanVector == BooleanVector
+    init<T1:VectorType, T2:VectorType>
+            (_:T1, _:T2, _:(_:T1.Element, _:T2.Element) -> Bool)
+    where T1.BooleanVector == BooleanVector, T2.BooleanVector == BooleanVector
 }
 
 public extension BooleanVectorType {
@@ -240,202 +242,147 @@ public typealias dmat4x4 = Matrix4x4<Double>
 
 // Section 8.1 Angle and Trignometry Functions
 
-@warn_unused_result
 public func radians<T:FloatingPointArithmeticType>(degrees:T) -> T {
     return degrees * 0.017453292519943295
 }
 
-@warn_unused_result
-public func radians<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(degrees:genType) -> genType {
+public func radians<genType:VectorType>(degrees:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(degrees, radians)
 }
 
-@warn_unused_result
 public func degrees<T:FloatingPointArithmeticType>(radians:T) -> T {
     return radians * 57.29577951308232
 }
 
-@warn_unused_result
-public func degrees<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(radians:genType) -> genType {
+public func degrees<genType:VectorType>(radians:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(radians, degrees)
 }
 
-@warn_unused_result
-public func sin<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(angle:genType) -> genType {
+public func sin<genType:VectorType>(angle:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(angle, SGLMath.SGLsin)
 }
 
-@warn_unused_result
-public func cos<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(angle:genType) -> genType {
+public func cos<genType:VectorType>(angle:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(angle, SGLMath.SGLcos)
 }
 
-@warn_unused_result
-public func tan<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(angle:genType) -> genType {
+public func tan<genType:VectorType>(angle:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(angle, SGLMath.SGLtan)
 }
 
-@warn_unused_result
-public func asin<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func asin<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLasin)
 }
 
-@warn_unused_result
-public func acos<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func acos<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLacos)
 }
 
-@warn_unused_result
-public func atan<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ y:genType.Element, _ x:genType) -> genType {
+public func atan<genType:VectorType>(_ y:genType.Element, _ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(y, x, SGLMath.SGLatan)
 }
 
-@warn_unused_result
-public func atan<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ y:genType, _ x:genType.Element) -> genType {
+public func atan<genType:VectorType>(_ y:genType, _ x:genType.Element) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(y, x, SGLMath.SGLatan)
 }
 
-@warn_unused_result
-public func atan<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ y:genType, _ x:genType) -> genType {
+public func atan<genType:VectorType>(_ y:genType, _ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(y, x, SGLMath.SGLatan)
 }
 
-@warn_unused_result
-public func atan<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(yoverx:genType) -> genType {
+public func atan<genType:VectorType>(yoverx:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(yoverx, SGLMath.SGLatan)
 }
 
-@warn_unused_result
-public func sinh<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func sinh<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLsinh)
 }
 
-@warn_unused_result
-public func cosh<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func cosh<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLcosh)
 }
 
-@warn_unused_result
-public func tanh<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func tanh<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLtanh)
 }
 
-@warn_unused_result
-public func asinh<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func asinh<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLasinh)
 }
 
-@warn_unused_result
-public func acosh<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func acosh<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLacosh)
 }
 
-@warn_unused_result
-public func atanh<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func atanh<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLatanh)
 }
 
 
 // Section 8.2 Exponential Functions
 
-@warn_unused_result
-public func pow<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType, _ y:genType) -> genType {
+public func pow<genType:VectorType>(_ x:genType, _ y:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, y, SGLMath.SGLpow)
 }
 
-@warn_unused_result
-public func exp<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func exp<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLexp)
 }
 
-@warn_unused_result
-public func log<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func log<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLlog)
 }
 
-@warn_unused_result
-public func exp2<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func exp2<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLexp2)
 }
 
-@warn_unused_result
-public func log2<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func log2<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLlog2)
 }
 
-@warn_unused_result
-public func sqrt<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func sqrt<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLsqrt)
 }
 
-@warn_unused_result
-public func inversesqrt<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func inversesqrt<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType{
     return genType(x) { 1 / SGLMath.SGLsqrt($0) }
 }
 
 
 // Section 8.3 Common Functions
 
-@warn_unused_result
-public func abs<genType:VectorType where
-    genType.Element:AbsoluteValuable
-    >(_ x:genType) -> genType {
+public func abs<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:AbsoluteValuable {
     return genType(x, abs)
 }
 
-@warn_unused_result
-public func sign<Vector: VectorType where
-    Vector.Element: SignedNumber
-    >(_ x:Vector) -> Vector {
-    
+public func sign<Vector: VectorType>(_ x:Vector) -> Vector
+  where Vector.Element: SignedNumber{
     let function : (Vector.Element) -> Vector.Element = { component in
         if component == 0 {
             return 0
@@ -445,28 +392,22 @@ public func sign<Vector: VectorType where
             return 1
         }
     }
-    
+
     return Vector(x, function)
 }
 
-@warn_unused_result
-public func floor<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func floor<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLfloor)
 }
 
-@warn_unused_result
-public func trunc<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func trunc<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLtrunc)
 }
 
-@warn_unused_result
-public func round<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func round<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLround)
 }
 
@@ -482,23 +423,18 @@ private func roundEven<T:FloatingPointArithmeticType>(_ x:T) -> T {
     return int + (x <= 0 ? T(-1) : 1)
 }
 
-@warn_unused_result
-public func roundEven<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func roundEven<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, roundEven)
 }
 
-@warn_unused_result
-public func ceil<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func ceil<genType:VectorType>(_ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, SGLMath.SGLceil)
 }
 
-@warn_unused_result
-public func fract<T:VectorType where T.Element:FloatingPointArithmeticType>
-    (_ x:T) -> T {
+public func fract<T:VectorType>(_ x:T) -> T
+  where T.Element:FloatingPointArithmeticType {
     let one_minus_ulp:T.Element
     switch(x) {
     case is Float:
@@ -511,46 +447,37 @@ public func fract<T:VectorType where T.Element:FloatingPointArithmeticType>
     return min(x - floor(x), one_minus_ulp)
 }
 
-@warn_unused_result
 public func mod<genType:VectorType>
-    (_ x:genType, _ y:genType.Element) -> genType {
+(_ x:genType, _ y:genType.Element) -> genType {
     return x % y
 }
 
-@warn_unused_result
 public func mod<genType:VectorType>
-    (_ x:genType, _ y:genType) -> genType {
+(_ x:genType, _ y:genType) -> genType {
     return x % y
 }
 
-@warn_unused_result
-public func modf<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType, _ i:inout genType) -> genType {
+public func modf<genType:VectorType>(_ x:genType, _ i:inout genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x, &i, SGLMath.SGLmodf)
 }
 
-@warn_unused_result
 public func min<genType:VectorType>(_ x:genType, _ y:genType) -> genType {
     return genType(x, y, min)
 }
 
-@warn_unused_result
 public func min<genType:VectorType>(_ x:genType, _ y:genType.Element) -> genType {
     return genType(x, y, min)
 }
 
-@warn_unused_result
 public func max<genType:VectorType>(_ x:genType, _ y:genType) -> genType {
     return genType(x, y, max)
 }
 
-@warn_unused_result
 public func max<genType:VectorType>(_ x:genType, _ y:genType.Element) -> genType {
     return genType(x, y, max)
 }
 
-@warn_unused_result
 public func clamp<genType:VectorType>(_ x:genType, _ minVal:genType, _ maxVal:genType) -> genType {
     return genType(x, minVal, maxVal) {
         (_ x:genType.Element, minVal:genType.Element, maxVal:genType.Element) in
@@ -558,13 +485,11 @@ public func clamp<genType:VectorType>(_ x:genType, _ minVal:genType, _ maxVal:ge
     }
 }
 
-@warn_unused_result
 public func clamp<genType:VectorType>
     (_ x:genType, _ minVal:genType.Element, _ maxVal:genType.Element) -> genType {
     return genType(x) { min(max($0, minVal), maxVal) }
 }
 
-@warn_unused_result
 public func mix<genType:VectorType>(_ x:genType, _ y:genType, _ a:genType) -> genType {
     return genType(x, y, a) {
         (_ x:genType.Element, y:genType.Element, a:genType.Element) in
@@ -573,33 +498,26 @@ public func mix<genType:VectorType>(_ x:genType, _ y:genType, _ a:genType) -> ge
     }
 }
 
-@warn_unused_result
 public func mix<genType:VectorType>(_ x:genType, _ y:genType, _ a:genType.Element) -> genType {
     let inv = 1 - a
     return genType(x, y) {$0 * inv + $1 * a}
 }
 
-@warn_unused_result
-public func mix<genType:VectorType, genBType:BooleanVectorType
-    where genType.BooleanVector == genBType.BooleanVector
-    >(_ x:genType, _ y:genType, _ a:genBType) -> genType {
+public func mix<genType:VectorType, genBType:BooleanVectorType>(_ x:genType, _ y:genType, _ a:genBType) -> genType
+  where genType.BooleanVector == genBType.BooleanVector {
     return genType(x, y, a) {$2 ? $1 : $0}
 }
 
-@warn_unused_result
 public func step<genType:VectorType>(edge:genType, _ x:genType) -> genType {
     return genType(edge, x) { $1 < $0 ? 0 : 1}
 }
 
-@warn_unused_result
 public func step<genType:VectorType>(edge:genType.Element, _ x:genType) -> genType {
     return genType(x) { $0 < edge ? 0 : 1}
 }
 
-@warn_unused_result
-public func smoothstep<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(edge0:genType, _ edge1:genType, _ x:genType) -> genType {
+public func smoothstep<genType:VectorType>(edge0:genType, _ edge1:genType, _ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(edge0, edge1, x) { (edge0, edge1, x) in
         var i = x-edge0
         i /= edge1-edge0
@@ -609,10 +527,8 @@ public func smoothstep<genType:VectorType where
     }
 }
 
-@warn_unused_result
-public func smoothstep<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(edge0:genType.Element, _ edge1:genType.Element, _ x:genType) -> genType {
+public func smoothstep<genType:VectorType>(edge0:genType.Element, _ edge1:genType.Element, _ x:genType) -> genType
+  where genType.Element:FloatingPointArithmeticType {
     return genType(x) { (x) in
         var i = x-edge0
         i /= edge1-edge0
@@ -622,117 +538,111 @@ public func smoothstep<genType:VectorType where
     }
 }
 
-@warn_unused_result
-public func isnan<genType:VectorType
-    where
+public func isnan<genType:VectorType>(_ x:genType) -> genType.BooleanVector
+  where
     genType.Element:FloatingPoint,
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x) {$0.isNaN}
 }
 
-@warn_unused_result
-public func isinf<genType:VectorType
-    where
+public func isinf<genType:VectorType>(_ x:genType) -> genType.BooleanVector
+  where
     genType.Element:FloatingPoint,
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x) {$0.isInfinite}
 }
 
-@warn_unused_result
-public func floatBitsToInt<genType:VectorType where
+public func floatBitsToInt<genType:VectorType>(value:genType) -> genType.Int32Vector
+  where
     genType.Int32Vector:VectorType,
     genType.Element == Float,
     genType.BooleanVector == genType.Int32Vector.BooleanVector
-    >(value:genType) -> genType.Int32Vector {
+{
     return genType.Int32Vector( value ) {
         unsafeBitCast($0 , to: genType.Int32Vector.Element.self)
     }
 }
 
-@warn_unused_result
-public func floatBitsToUint<genType:VectorType where
+public func floatBitsToUint<genType:VectorType>(value:genType) -> genType.UInt32Vector
+  where
     genType.UInt32Vector:VectorType,
     genType.Element == Float,
     genType.BooleanVector == genType.UInt32Vector.BooleanVector
-    >(value:genType) -> genType.UInt32Vector {
+{
     return genType.UInt32Vector( value ) {
         unsafeBitCast($0 , to: genType.UInt32Vector.Element.self)
     }
 }
 
-@warn_unused_result
-public func intBitsToFloat<genType:VectorType where
+public func intBitsToFloat<genType:VectorType>(value:genType) -> genType.FloatVector
+  where
     genType.FloatVector:VectorType,
     genType.Element == Int32,
     genType.BooleanVector == genType.FloatVector.BooleanVector
-    >(value:genType) -> genType.FloatVector {
+{
     return genType.FloatVector( value ) {
         unsafeBitCast($0 , to: genType.FloatVector.Element.self)
     }
 }
 
-@warn_unused_result
-public func uintBitsToFloat<genType:VectorType where
+public func uintBitsToFloat<genType:VectorType>(value:genType) -> genType.FloatVector
+  where
     genType.FloatVector:VectorType,
     genType.Element == UInt32,
     genType.BooleanVector == genType.FloatVector.BooleanVector
-    >(value:genType) -> genType.FloatVector {
+{
     return genType.FloatVector( value ) {
         unsafeBitCast($0 , to: genType.FloatVector.Element.self)
     }
 }
 
-@warn_unused_result
-public func fma<genType:VectorType where
+public func fma<genType:VectorType>(_ a:genType, _ b:genType, _ c:genType) -> genType
+  where
     genType.Element:FloatingPointArithmeticType
-    >(_ a:genType, _ b:genType, _ c:genType) -> genType {
+{
     return genType(a, b, c, SGLMath.SGLfma)
 }
 
-@warn_unused_result
-public func frexp<genType:VectorType, genIType:VectorType where
+public func frexp<genType:VectorType, genIType:VectorType>(_ x:genType, _ exp:inout genIType) -> genType
+  where
     genType.Element:FloatingPointArithmeticType,
     genIType.Element == Int32,
     genType.BooleanVector == genIType.BooleanVector
-    >(_ x:genType, _ exp:inout genIType) -> genType {
+{
     return genType(x, &exp, SGLMath.SGLfrexp)
 }
 
-@warn_unused_result
-public func ldexp<genType:VectorType, genIType:VectorType where
+public func ldexp<genType:VectorType, genIType:VectorType>(_ x:genType, _ exp:genIType) -> genType
+  where
     genType.Element:FloatingPointArithmeticType,
     genIType.Element == Int32,
     genType.BooleanVector == genIType.BooleanVector
-    >(_ x:genType, _ exp:genIType) -> genType {
+{
     return genType(x, exp, SGLMath.SGLldexp)
 }
 
 
 // Section 8.4 Floating-Point Pack and Unpack Functions
 
-@warn_unused_result
 public func packUnorm2x16(_ v:vec2) -> UInt32 {
     let i = uvec2(round(clamp(v, 0, 1) * 0xffff))
     return (i.y << 16) &+ i.x
 }
 
-@warn_unused_result
 public func packSnorm2x16(_ v:vec2) -> UInt32 {
     let i = ivec2(round(clamp(v, -1, 1) * 0x7fff))
     return ((UInt32(bitPattern: i.y) & 0xFFFF) << 16) &+ (UInt32(bitPattern: i.x) & 0xFFFF)
 }
 
-@warn_unused_result
 public func packUnorm4x8(_ v:vec4) -> UInt32 {
     let i = uvec4(round(clamp(v, 0, 1) * 0xff))
     return (i.w << 24) &+ (i.z << 16) &+ (i.y << 8) &+ i.x
 }
 
-@warn_unused_result
 public func packSnorm4x8(_ v:vec4) -> UInt32 {
     let i = ivec4(round(clamp(v, -1, 1) * 0x7f))
     var r = (UInt32(bitPattern: i.w) & 0xFF) << 24
@@ -742,7 +652,6 @@ public func packSnorm4x8(_ v:vec4) -> UInt32 {
     return r
 }
 
-@warn_unused_result
 public func unpackUnorm2x16(_ p:UInt32) -> vec2 {
     let r = vec2(
         Float(p & 0xffff),
@@ -751,7 +660,6 @@ public func unpackUnorm2x16(_ p:UInt32) -> vec2 {
     return r / 0xffff
 }
 
-@warn_unused_result
 public func unpackSnorm2x16(_ p:UInt32) -> vec2 {
     let p0 = UInt16(p >> 0 & 0xffff)
     let p1 = UInt16(p >> 16 & 0xffff)
@@ -762,7 +670,6 @@ public func unpackSnorm2x16(_ p:UInt32) -> vec2 {
     return clamp(r / 0x7fff, -1, 1)
 }
 
-@warn_unused_result
 public func unpackUnorm4x8(_ p:UInt32) -> vec4 {
     let r = vec4(
         Float(p & 0xff),
@@ -773,7 +680,6 @@ public func unpackUnorm4x8(_ p:UInt32) -> vec4 {
     return r / 0xff
 }
 
-@warn_unused_result
 public func unpackSnorm4x8(_ p:UInt32) -> vec4 {
     let p0 = UInt8(p >> 0 & 0xff)
     let p1 = UInt8(p >> 8 & 0xff)
@@ -788,13 +694,11 @@ public func unpackSnorm4x8(_ p:UInt32) -> vec4 {
     return clamp(r / 0x7f, -1, 1)
 }
 
-@warn_unused_result
 public func packDouble2x32 (_ v:uvec2) -> Double {
     let i:UInt64 = (UInt64(v.y) << 32) + UInt64(v.x)
     return unsafeBitCast(i, to: Double.self)
 }
 
-@warn_unused_result
 public func unpackDouble2x32 (_ v:Double) -> uvec2 {
     let d = unsafeBitCast(v, to: UInt64.self)
     return uvec2(
@@ -803,14 +707,12 @@ public func unpackDouble2x32 (_ v:Double) -> uvec2 {
     )
 }
 
-@warn_unused_result
 public func packHalf2x16 (_ v:vec2) -> UInt32 {
     var ret:UInt32 = UInt32(SGLMath.halfFromFloat(v[0]))
     ret += UInt32(SGLMath.halfFromFloat(v[1])) << 16
     return ret
 }
 
-@warn_unused_result
 public func unpackHalf2x16 (_ v:UInt32) -> vec2 {
     return vec2 (
         SGLMath.floatFromHalf( UInt16(v & 0xFFFF) ),
@@ -821,24 +723,24 @@ public func unpackHalf2x16 (_ v:UInt32) -> vec2 {
 
 // Section 8.5 Geometric Functions
 
-@warn_unused_result
-public func length<genType:VectorType where
+public func length<genType:VectorType>(_ x:genType) -> genType.Element
+  where
     genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType.Element {
+{
     return SGLMath.SGLsqrt(dot(x, x))
 }
 
-@warn_unused_result
-public func distance<genType:VectorType where
+public func distance<genType:VectorType>(p0:genType, _ p1:genType) -> genType.Element
+  where
     genType.Element:FloatingPointArithmeticType
-    >(p0:genType, _ p1:genType) -> genType.Element {
+{
     return length(p0 - p1)
 }
 
-@warn_unused_result
-public func dot<genType:VectorType where
+public func dot<genType:VectorType>(_ x:genType, _ y:genType) -> genType.Element
+  where
     genType.Element:FloatingPointArithmeticType
-    >(_ x:genType, _ y:genType) -> genType.Element {
+{
     switch (x) {
     case is Vector2<genType.Element>:
         let xx = x as! Vector2<genType.Element>
@@ -862,7 +764,6 @@ public func dot<genType:VectorType where
     //return a.reduce(0) { $0 + ($1 as! genType.Element) }
 }
 
-@warn_unused_result
 public func cross<T:FloatingPointArithmeticType>
     (_ x:Vector3<T>, _ y:Vector3<T>) -> Vector3<T> {
     var x1:T = x.y * y.z
@@ -874,32 +775,27 @@ public func cross<T:FloatingPointArithmeticType>
     return Vector3<T>(x1,y1,z1)
 }
 
-@warn_unused_result
-public func normalize<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ x:genType) -> genType {
+public func normalize<genType:VectorType>(_ x:genType) -> genType
+where genType.Element:FloatingPointArithmeticType {
     return x / length(x)
 }
 
-@warn_unused_result
-public func faceforward<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ n:genType, _ i:genType, _ nRef:genType) -> genType {
+public func faceforward<genType:VectorType>(_ n:genType, _ i:genType, _ nRef:genType) -> genType
+where genType.Element:FloatingPointArithmeticType
+{
     return dot(nRef, i) < 0 ? n : -n
 }
 
-@warn_unused_result
-public func reflect<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ i:genType, _ n:genType) -> genType {
+public func reflect<genType:VectorType>(_ i:genType, _ n:genType) -> genType
+where genType.Element:FloatingPointArithmeticType
+{
     let f = 2 * dot(n, i)
     return i - f * n
 }
 
-@warn_unused_result
-public func refract<genType:VectorType where
-    genType.Element:FloatingPointArithmeticType
-    >(_ i:genType, _ n:genType, _ eta:genType.Element) -> genType {
+public func refract<genType:VectorType>(_ i:genType, _ n:genType, _ eta:genType.Element) -> genType
+where genType.Element:FloatingPointArithmeticType
+{
     let dotni = dot(n, i)
     var k = dotni * dotni
     k = 1 - k
@@ -914,161 +810,136 @@ public func refract<genType:VectorType where
 
 // Section 8.6 Matrix Functions
 
-@warn_unused_result
 public func matrixCompMult<mat:MatrixType>(_ x:mat, _ y:mat) -> mat {
     return mat(x, y, *)
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(_ c:Vector2<T>, _ r:Vector2<T>) -> Matrix2x2<T> {
     return Matrix2x2(
         c * r[0], c * r[1]
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(_ c:Vector3<T>, _ r:Vector2<T>) -> Matrix2x3<T> {
     return Matrix2x3(
         c * r[0], c * r[1]
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(_ c:Vector4<T>, _ r:Vector2<T>) -> Matrix2x4<T> {
     return Matrix2x4(
         c * r[0], c * r[1]
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector2<T>, _ r:Vector3<T>) -> Matrix3x2<T> {
     return Matrix3x2(
         c * r[0], c * r[1], c * r[2]
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector3<T>, _ r:Vector3<T>) -> Matrix3x3<T> {
     return Matrix3x3(
         c * r[0], c * r[1], c * r[2]
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector4<T>, _ r:Vector3<T>) -> Matrix3x4<T> {
     return Matrix3x4(
         c * r[0], c * r[1], c * r[2]
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector2<T>, _ r:Vector4<T>) -> Matrix4x2<T> {
     let c1 = c * r[0]
     let c2 = c * r[1]
     let c3 = c * r[2]
     let c4 = c * r[3]
-    
+
     return Matrix4x2(
         c1, c2, c3, c4
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector3<T>, _ r:Vector4<T>) -> Matrix4x3<T> {
-    
+
     let c1 = c * r[0]
     let c2 = c * r[1]
     let c3 = c * r[2]
     let c4 = c * r[3]
-    
+
     return Matrix4x3(
         c1, c2, c3, c4
     )
 }
 
-@warn_unused_result
 public func outerProduct<T:ArithmeticType>(c:Vector4<T>, _ r:Vector4<T>) -> Matrix4x4<T> {
     let c1 = c * r[0]
     let c2 = c * r[1]
     let c3 = c * r[2]
     let c4 = c * r[3]
-    
+
     return Matrix4x4(
         c1, c2, c3, c4
     )
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(m:Matrix2x2<T>) -> Matrix2x2<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(m:Matrix2x3<T>) -> Matrix3x2<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(m:Matrix2x4<T>) -> Matrix4x2<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(m:Matrix3x2<T>) -> Matrix2x3<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(m:Matrix3x3<T>) -> Matrix3x3<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(m:Matrix3x4<T>) -> Matrix4x3<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(m:Matrix4x2<T>) -> Matrix2x4<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(_ m:Matrix4x3<T>) -> Matrix3x4<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func transpose<T:ArithmeticType>(_ m:Matrix4x4<T>) -> Matrix4x4<T> {
     return m.transpose
 }
 
-@warn_unused_result
 public func determinant<T:ArithmeticType>(_ m:Matrix2x2<T>) -> T {
     return m.determinant
 }
 
-@warn_unused_result
 public func determinant<T:ArithmeticType>(_ m:Matrix3x3<T>) -> T {
     return m.determinant
 }
 
-@warn_unused_result
 public func determinant<T:ArithmeticType>(_ m:Matrix4x4<T>) -> T {
     return m.determinant
 }
 
-@warn_unused_result
 public func inverse<T:ArithmeticType>(m:Matrix2x2<T>) -> Matrix2x2<T> {
     return m.inverse
 }
 
-@warn_unused_result
 public func inverse<T:ArithmeticType>(m:Matrix3x3<T>) -> Matrix3x3<T> {
     return m.inverse
 }
 
-@warn_unused_result
 public func inverse<T:ArithmeticType>(m:Matrix4x4<T>) -> Matrix4x4<T> {
     return m.inverse
 }
@@ -1076,69 +947,68 @@ public func inverse<T:ArithmeticType>(m:Matrix4x4<T>) -> Matrix4x4<T> {
 
 // Section 8.7 Vector Relational Functions
 
-@warn_unused_result
-public func lessThan<genType:VectorType where
+public func lessThan<genType:VectorType>(_ x:genType, _ y:genType) -> genType.BooleanVector
+  where
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType, _ y:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x, y, <)
 }
 
-@warn_unused_result
-public func lessThanEqual<genType:VectorType where
+public func lessThanEqual<genType:VectorType>(_ x:genType, _ y:genType) -> genType.BooleanVector
+  where
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType, _ y:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x, y, <=)
 }
 
-@warn_unused_result
-public func greaterThan<genType:VectorType where
+public func greaterThan<genType:VectorType>(_ x:genType, _ y:genType) -> genType.BooleanVector
+  where
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType, _ y:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x, y, >)
 }
 
-@warn_unused_result
-public func greaterThanEqual<genType:VectorType where
+public func greaterThanEqual<genType:VectorType>(_ x:genType, _ y:genType) -> genType.BooleanVector
+  where
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType, _ y:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x, y, >=)
 }
 
-@warn_unused_result
-public func equal<genType:VectorType where
+public func equal<genType:VectorType>(_ x:genType, _ y:genType) -> genType.BooleanVector
+  where
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType, _ y:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x, y, ==)
 }
 
-@warn_unused_result
-public func notEqual<genType:VectorType where
+public func notEqual<genType:VectorType>(_ x:genType, _ y:genType) -> genType.BooleanVector
+  where
     genType.BooleanVector:BooleanVectorType,
     genType.BooleanVector == genType.BooleanVector.BooleanVector
-    >(_ x:genType, _ y:genType) -> genType.BooleanVector {
+{
     return genType.BooleanVector(x, y, !=)
 }
 
-@warn_unused_result
-public func any<bvec:BooleanVectorType where
+public func any<bvec:BooleanVectorType>(_ x:bvec) -> bvec.Iterator.Element
+  where
     bvec.Iterator.Element == Bool
-    >(_ x:bvec) -> bvec.Iterator.Element {
+{
     return x.reduce(false) { $0 || $1 }
 }
 
-@warn_unused_result
-public func all<bvec:BooleanVectorType where
+public func all<bvec:BooleanVectorType>(_ x:bvec) -> bvec.Iterator.Element
+  where
     bvec.Iterator.Element == Bool
-    >(_ x:bvec) -> bvec.Iterator.Element {
+{
     return x.reduce(true) { $0 && $1 }
 }
 
-@warn_unused_result
 public func not<bvec:BooleanVectorType>(_ x:bvec) -> bvec {
     return bvec(x, !)
 }
@@ -1199,7 +1069,6 @@ public postfix func --<T:MatrixType>(v: inout T) -> T {
     return r
 }
 
-@warn_unused_result
 public func +<T:MatrixType>(x1: T, x2: T) -> T {
     #if !os(Linux)
         switch (x1) {
@@ -1245,12 +1114,10 @@ public func +=<T:MatrixType>(x1: inout T, x2: T) {
     x1 = x1 + x2
 }
 
-@warn_unused_result
 public func +<T:MatrixType>(s: T.Element, x: T) -> T {
     return T(s, x, +)
 }
 
-@warn_unused_result
 public func +<T:MatrixType>(x: T, s: T.Element) -> T {
     return T(x, s, +)
 }
@@ -1259,7 +1126,6 @@ public func +=<T:MatrixType>(x: inout T, s: T.Element) {
     x = x + s
 }
 
-@warn_unused_result
 public func -<T:MatrixType>(x1: T, x2: T) -> T {
     #if !os(Linux)
         switch (x1) {
@@ -1305,12 +1171,10 @@ public func -=<T:MatrixType>(x1: inout T, x2: T) {
     x1 = x1 - x2
 }
 
-@warn_unused_result
 public func -<T:MatrixType>(s: T.Element, x: T) -> T {
     return T(s, x, -)
 }
 
-@warn_unused_result
 public func -<T:MatrixType>(x: T, s: T.Element) -> T {
     return T(x, s, -)
 }
@@ -1319,7 +1183,6 @@ public func -=<T:MatrixType>(x: inout T, s: T.Element) {
     x = x - s
 }
 
-@warn_unused_result
 public func *<T:MatrixType>(s: T.Element, x: T) -> T {
     #if !os(Linux)
         switch (x) {
@@ -1361,7 +1224,6 @@ public func *<T:MatrixType>(s: T.Element, x: T) -> T {
     return T(s, x, *)
 }
 
-@warn_unused_result
 public func *<T:MatrixType>(x: T, s: T.Element) -> T {
     #if !os(Linux)
         switch (x) {
@@ -1407,12 +1269,10 @@ public func *=<T:MatrixType>(x: inout T, s: T.Element) {
     x = x * s
 }
 
-@warn_unused_result
 public func /<T:MatrixType>(s: T.Element, x: T) -> T {
     return T(s, x, /)
 }
 
-@warn_unused_result
 public func /<T:MatrixType>(x: T, s: T.Element) -> T {
     return T(x, s, /)
 }
@@ -1421,7 +1281,6 @@ public func /=<T:MatrixType>(x: inout T, s: T.Element) {
     x = x / s
 }
 
-@warn_unused_result
 public func %<T:MatrixType>(x1: T, x2: T) -> T {
     return T(x1, x2, %)
 }
@@ -1430,12 +1289,10 @@ public func %=<T:MatrixType>(x1: inout T, x2: T) {
     x1 = x1 % x2
 }
 
-@warn_unused_result
 public func %<T:MatrixType>(s: T.Element, x: T) -> T {
     return T(s, x, %)
 }
 
-@warn_unused_result
 public func %<T:MatrixType>(x: T, s: T.Element) -> T {
     return T(x, s, %)
 }
@@ -1447,8 +1304,8 @@ public func %=<T:MatrixType>(x: inout T, s: T.Element) {
 
 // Unchecked Integer Operators
 
-@warn_unused_result
-public func &+<T:MatrixType where T.Element:IntegerArithmetic>(v1: T, v2: T) -> T {
+public func &+<T:MatrixType>(v1: T, v2: T) -> T
+where T.Element:IntegerArithmetic {
     #if !os(Linux)
         switch (v1) {
         case is Vector2<Int32>, is Vector2<UInt32> :
@@ -1462,18 +1319,18 @@ public func &+<T:MatrixType where T.Element:IntegerArithmetic>(v1: T, v2: T) -> 
     return T(v1, v2, &+)
 }
 
-@warn_unused_result
-public func &+<T:MatrixType where T.Element:IntegerArithmetic>(s: T.Element, v: T) -> T {
+public func &+<T:MatrixType>(s: T.Element, v: T) -> T
+where T.Element:IntegerArithmetic {
     return T(s, v, &+)
 }
 
-@warn_unused_result
-public func &+<T:MatrixType where T.Element:IntegerArithmetic>(v: T, s: T.Element) -> T {
+public func &+<T:MatrixType>(v: T, s: T.Element) -> T
+where T.Element:IntegerArithmetic {
     return T(v, s, &+)
 }
 
-@warn_unused_result
-public func &-<T:MatrixType where T.Element:IntegerArithmetic>(v1: T, v2: T) -> T {
+public func &-<T:MatrixType>(v1: T, v2: T) -> T
+where T.Element:IntegerArithmetic {
     #if !os(Linux)
         switch (v1) {
         case is Vector2<Int32>, is Vector2<UInt32> :
@@ -1487,18 +1344,18 @@ public func &-<T:MatrixType where T.Element:IntegerArithmetic>(v1: T, v2: T) -> 
     return T(v1, v2, &-)
 }
 
-@warn_unused_result
-public func &-<T:MatrixType where T.Element:IntegerArithmetic>(s: T.Element, v: T) -> T {
+public func &-<T:MatrixType>(s: T.Element, v: T) -> T
+where T.Element:IntegerArithmetic {
     return T(s, v, &-)
 }
 
-@warn_unused_result
-public func &-<T:MatrixType where T.Element:IntegerArithmetic>(v: T, s: T.Element) -> T {
+public func &-<T:MatrixType>(v: T, s: T.Element) -> T
+where T.Element:IntegerArithmetic {
     return T(v, s, &-)
 }
 
-@warn_unused_result
-public func &*<T:MatrixType where T.Element:IntegerArithmetic>(v1: T, v2: T) -> T {
+public func &*<T:MatrixType>(v1: T, v2: T) -> T
+where T.Element:IntegerArithmetic {
     #if !os(Linux)
         switch (v1) {
         case is Vector2<Int32>, is Vector2<UInt32> :
@@ -1512,8 +1369,8 @@ public func &*<T:MatrixType where T.Element:IntegerArithmetic>(v1: T, v2: T) -> 
     return T(v1, v2, &*)
 }
 
-@warn_unused_result
-public func &*<T:MatrixType where T.Element:IntegerArithmetic>(s: T.Element, v: T) -> T {
+public func &*<T:MatrixType>(s: T.Element, v: T) -> T
+where T.Element:IntegerArithmetic {
     #if !os(Linux)
         switch (v) {
         case is Vector2<Int32>, is Vector2<UInt32> :
@@ -1527,8 +1384,8 @@ public func &*<T:MatrixType where T.Element:IntegerArithmetic>(s: T.Element, v: 
     return T(s, v, &*)
 }
 
-@warn_unused_result
-public func &*<T:MatrixType where T.Element:IntegerArithmetic>(v: T, s: T.Element) -> T {
+public func &*<T:MatrixType>(v: T, s: T.Element) -> T
+where T.Element:IntegerArithmetic {
     #if !os(Linux)
         switch (v) {
         case is Vector2<Int32>, is Vector2<UInt32> :
@@ -1542,110 +1399,116 @@ public func &*<T:MatrixType where T.Element:IntegerArithmetic>(v: T, s: T.Elemen
     return T(v, s, &*)
 }
 
-@warn_unused_result
-public func << <T:MatrixType where T.Element:BitsOperationsType>(v: T, s: T.Element) -> T {
+public func << <T:MatrixType>(v: T, s: T.Element) -> T
+where T.Element:BitsOperationsType {
     return T(v, s, <<)
 }
 
-public func <<= <T:MatrixType where T.Element:BitsOperationsType>(v: inout T, s: T.Element) {
+public func <<= <T:MatrixType>(v: inout T, s: T.Element)
+where T.Element:BitsOperationsType {
     v = v << s
 }
 
-@warn_unused_result
-public func >> <T:MatrixType where T.Element:BitsOperationsType>(v: T, s: T.Element) -> T {
+public func >> <T:MatrixType>(v: T, s: T.Element) -> T
+where T.Element:BitsOperationsType {
     return T(v, s, <<)
 }
 
-public func >>= <T:MatrixType where T.Element:BitsOperationsType>(v: inout T, s: T.Element) {
+public func >>= <T:MatrixType>(v: inout T, s: T.Element)
+where T.Element:BitsOperationsType {
     v = v >> s
 }
 
-@warn_unused_result
-public func &<T:MatrixType where T.Element:BitsOperationsType>(x1: T, x2: T) -> T {
+public func &<T:MatrixType>(x1: T, x2: T) -> T
+where T.Element:BitsOperationsType {
     return T(x1, x2, &)
 }
 
-public func &=<T:MatrixType where T.Element:BitsOperationsType>(x1: inout T, x2: T) {
+public func &=<T:MatrixType>(x1: inout T, x2: T)
+where T.Element:BitsOperationsType {
     x1 = x1 & x2
 }
 
-@warn_unused_result
-public func &<T:MatrixType where T.Element:BitsOperationsType>(s: T.Element, x: T) -> T {
+public func &<T:MatrixType>(s: T.Element, x: T) -> T
+where T.Element:BitsOperationsType {
     return T(s, x, &)
 }
 
-@warn_unused_result
-public func &<T:MatrixType where T.Element:BitsOperationsType>(x: T, s: T.Element) -> T {
+public func &<T:MatrixType>(x: T, s: T.Element) -> T
+where T.Element:BitsOperationsType {
     return T(x, s, &)
 }
 
-public func &=<T:MatrixType where T.Element:BitsOperationsType>(x: inout T, s: T.Element) {
+public func &=<T:MatrixType>(x: inout T, s: T.Element)
+where T.Element:BitsOperationsType {
     x = x & s
 }
 
-@warn_unused_result
-public func |<T:MatrixType where T.Element:BitsOperationsType>(x1: T, x2: T) -> T {
+public func |<T:MatrixType>(x1: T, x2: T) -> T
+where T.Element:BitsOperationsType {
     return T(x1, x2, |)
 }
 
-public func |=<T:MatrixType where T.Element:BitsOperationsType>(x1: inout T, x2: T) {
+public func |=<T:MatrixType>(x1: inout T, x2: T)
+where T.Element:BitsOperationsType {
     x1 = x1 | x2
 }
 
-@warn_unused_result
-public func |<T:MatrixType where T.Element:BitsOperationsType>(s: T.Element, x: T) -> T {
+public func |<T:MatrixType>(s: T.Element, x: T) -> T
+where T.Element:BitsOperationsType {
     return T(s, x, |)
 }
 
-@warn_unused_result
-public func |<T:MatrixType where T.Element:BitsOperationsType>(x: T, s: T.Element) -> T {
+public func |<T:MatrixType>(x: T, s: T.Element) -> T
+where T.Element:BitsOperationsType {
     return T(x, s, |)
 }
 
-public func |=<T:MatrixType where T.Element:BitsOperationsType>(x: inout T, s: T.Element) {
+public func |=<T:MatrixType>(x: inout T, s: T.Element)
+where T.Element:BitsOperationsType {
     x = x | s
 }
 
-@warn_unused_result
-public func ^<T:MatrixType where T.Element:BitsOperationsType>(v1: T, v2: T) -> T {
+public func ^<T:MatrixType>(v1: T, v2: T) -> T
+where T.Element:BitsOperationsType {
     return T(v1, v2, ^)
 }
 
-public func ^=<T:MatrixType where T.Element:BitsOperationsType>(x1: inout T, x2: T) {
+public func ^=<T:MatrixType>(x1: inout T, x2: T)
+where T.Element:BitsOperationsType {
     x1 = x1 ^ x2
 }
 
-@warn_unused_result
-public func ^<T:MatrixType where T.Element:BitsOperationsType>(s: T.Element, x: T) -> T {
+public func ^<T:MatrixType>(s: T.Element, x: T) -> T
+where T.Element:BitsOperationsType {
     return T(s, x, ^)
 }
 
-@warn_unused_result
-public func ^<T:MatrixType where T.Element:BitsOperationsType>(x: T, s: T.Element) -> T {
+public func ^<T:MatrixType>(x: T, s: T.Element) -> T
+where T.Element:BitsOperationsType {
     return T(x, s, ^)
 }
 
-public func ^=<T:MatrixType where T.Element:BitsOperationsType>(x: inout T, s: T.Element) {
+public func ^=<T:MatrixType>(x: inout T, s: T.Element)
+where T.Element:BitsOperationsType{
     x = x ^ s
 }
 
-@warn_unused_result
-public prefix func ~<T:MatrixType where T.Element:BitsOperationsType>(v: T) -> T {
+public prefix func ~<T:MatrixType>(v: T) -> T
+where T.Element:BitsOperationsType {
     return T(v, ~)
 }
 
 
 // Signed Numbers Only
 
-@warn_unused_result
-public prefix func +<T:MatrixType where T.Element:SignedNumber>
-    (v: T) -> T {
+public prefix func +<T:MatrixType>(v: T) -> T
+where T.Element:SignedNumber {
     return v
 }
 
-@warn_unused_result
-public prefix func -<T:MatrixType where T.Element:SignedNumber>
-    (x: T) -> T {
+public prefix func -<T:MatrixType>(x: T) -> T
+where T.Element:SignedNumber {
     #if !os(Linux)
         switch (x) {
         case is Matrix2x2<Float> :
@@ -1693,7 +1556,6 @@ public prefix func -<T:MatrixType where T.Element:SignedNumber>
 
 // Vector Multiply and Divide
 
-@warn_unused_result
 public func *<T:VectorType>(v1: T, v2: T) -> T {
     #if !os(Linux)
         switch (v1) {
@@ -1715,7 +1577,6 @@ public func *=<T:VectorType>(v1: inout T, v2: T) {
     v1 = v1 * v2
 }
 
-@warn_unused_result
 public func /<T:VectorType>(v1: T, v2: T) -> T {
     #if !os(Linux)
         switch (v1) {

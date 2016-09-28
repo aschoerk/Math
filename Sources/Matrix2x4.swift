@@ -29,7 +29,7 @@ public struct Matrix2x4<T:ArithmeticType> : MatrixType {
 
     public typealias Element = T
 
-    private var x:Vector4<T>, y:Vector4<T>
+    fileprivate var x:Vector4<T>, y:Vector4<T>
 
     public var startIndex: Int { return 0 }
     public var endIndex: Int { return 2 }
@@ -56,9 +56,9 @@ public struct Matrix2x4<T:ArithmeticType> : MatrixType {
     }
 
     public var debugDescription: String {
-        return String(self.dynamicType) + "(" + [x,y].map{ (v:Vector4<T>) -> String in
-            "[" + [v.x,v.y,v.z,v.w].map{ (n:T) -> String in String(n) }.joined(separator: ", ") + "]"
-            }.joined(separator: ", ") + ")"
+        return "\(type(of: self))(" + [x,y].map{ (v:Vector4<T>) -> String in
+            "[\(v.x), \(v.y), \(v.z), \(v.w)]"
+        }.joined(separator: ", ") + ")"
     }
 
     public var hashValue: Int {
@@ -193,22 +193,22 @@ public struct Matrix2x4<T:ArithmeticType> : MatrixType {
         self.y = Vector4<T>(m.y)
     }
     
-    public init (_ m:Matrix2x4<T>, _ op: @noescape (_:T) -> T) {
+    public init (_ m:Matrix2x4<T>, _ op: (_:T) -> T) {
         self.x = Vector4<T>(m.x, op)
         self.y = Vector4<T>(m.y, op)
     }
 
-    public init (_ s:T, _ m:Matrix2x4<T>, _ op: @noescape (_:T, _:T) -> T) {
+    public init (_ s:T, _ m:Matrix2x4<T>, _ op: (_:T, _:T) -> T) {
         self.x = Vector4<T>(s, m.x, op)
         self.y = Vector4<T>(s, m.y, op)
     }
 
-    public init (_ m:Matrix2x4<T>, _ s:T, _ op: @noescape (_:T, _:T) -> T) {
+    public init (_ m:Matrix2x4<T>, _ s:T, _ op: (_:T, _:T) -> T) {
         self.x = Vector4<T>(m.x, s, op)
         self.y = Vector4<T>(m.y, s, op)
     }
 
-    public init (_ m1:Matrix2x4<T>, _ m2:Matrix2x4<T>, _ op: @noescape (_:T, _:T) -> T) {
+    public init (_ m1:Matrix2x4<T>, _ m2:Matrix2x4<T>, _ op: (_:T, _:T) -> T) {
         self.x = Vector4<T>(m1.x, m2.x, op)
         self.y = Vector4<T>(m1.y, m2.y, op)
     }
@@ -230,7 +230,6 @@ public func ==<T:ArithmeticType>(m1: Matrix2x4<T>, m2: Matrix2x4<T>) -> Bool {
 }
 
 
-@warn_unused_result
 public func *<T:ArithmeticType>(v: Vector4<T>, m: Matrix2x4<T>) -> Vector2<T> {
     #if !os(Linux)
         if T.self == Float.self {
@@ -252,7 +251,6 @@ public func *<T:ArithmeticType>(v: Vector4<T>, m: Matrix2x4<T>) -> Vector2<T> {
 }
 
 
-@warn_unused_result
 public func *<T:ArithmeticType>(m: Matrix2x4<T>, v: Vector2<T>) -> Vector4<T> {
     #if !os(Linux)
         if T.self == Float.self {
@@ -266,7 +264,6 @@ public func *<T:ArithmeticType>(m: Matrix2x4<T>, v: Vector2<T>) -> Vector4<T> {
 }
 
 
-@warn_unused_result
 public func *<T:ArithmeticType>(m1: Matrix2x4<T>, m2: Matrix2x2<T>) -> Matrix2x4<T> {
     #if !os(Linux)
         if T.self == Float.self {
@@ -284,7 +281,6 @@ public func *<T:ArithmeticType>(m1: Matrix2x4<T>, m2: Matrix2x2<T>) -> Matrix2x4
 }
 
 
-@warn_unused_result
 public func *<T:ArithmeticType>(m1: Matrix2x4<T>, m2: Matrix3x2<T>) -> Matrix3x4<T> {
     #if !os(Linux)
         if T.self == Float.self {
@@ -304,7 +300,6 @@ public func *<T:ArithmeticType>(m1: Matrix2x4<T>, m2: Matrix3x2<T>) -> Matrix3x4
 }
 
 
-@warn_unused_result
 public func *<T:ArithmeticType>(m1: Matrix2x4<T>, m2: Matrix4x2<T>) -> Matrix4x4<T> {
     #if !os(Linux)
         if T.self == Float.self {
